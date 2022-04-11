@@ -29,13 +29,12 @@ import (
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "run the sonrai API service",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Run the Sonrai API service",
+	Long: `Starts the Sonrai service. The API and user interface run on port 3000 by default but
+may be overridden in the [server] section of the config file.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+**API** http://localhost:3000/api/v1/<endpoint>
+**UI**  http://localhost:3000/ui`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("serve called")
 
