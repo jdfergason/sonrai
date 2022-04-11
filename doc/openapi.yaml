@@ -19,6 +19,8 @@ tags:
     description: Producers create new data records in Sonrai
   - name: data-records
     description: Types of data that can flow through Sonrai
+  - name: transformers
+    description: Transformers modify data flowing through Sonrai
   - name: monitors
     description: Create alarms and monitor activity
   - name: syncs
@@ -59,7 +61,7 @@ paths:
           description: Not authorized
       security:
         - api_key: []
-  /producer:
+  /producers:
     get:
       tags:
         - producers
@@ -112,7 +114,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Producer'
-  '/producer/{producerId}':
+  '/producer/{producerSlug}':
     get:
       tags:
         - producers
@@ -120,7 +122,7 @@ paths:
       description: Returns the details of all producers belonging to the user
       operationId: getProducerById
       parameters:
-        - name: producerId
+        - name: producerSlug
           in: path
           description: ID of producer to return
           required: true
@@ -146,7 +148,7 @@ paths:
       summary: Updates a producer with new values
       operationId: updateProducer
       parameters:
-        - name: producerId
+        - name: producerSlug
           in: path
           description: ID of producer that needs to be updated
           required: true
@@ -177,7 +179,7 @@ paths:
       summary: Deletes a producer
       operationId: deleteProducer
       parameters:
-        - name: producerId
+        - name: producerSlug
           in: path
           description: Producer id to delete
           required: true
@@ -191,6 +193,140 @@ paths:
           description: Not authorized
         '404':
           description: Producer not found
+      security:
+        - api_key: []
+  /transformers:
+    get:
+      tags:
+        - transformers
+      summary: List all transformers
+      description: Returns information for all configured transformers
+      operationId: listTransformers
+      parameters:
+        - name: page
+          in: query
+          description: page to retrieve
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransformerSummary'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Transformer not found
+      security:
+        - api_key: []
+    put:
+      tags:
+        - transformers
+      summary: Create a transformer
+      operationId: createTransformer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transformer'
+        '403':
+          description: Not authorized
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transformer'
+  '/transformer/{transformerSlug}':
+    get:
+      tags:
+        - transformers
+      summary: Retrieve details of all transformers
+      description: Returns the details of the transformer
+      operationId: getTransformerById
+      parameters:
+        - name: transformerSlug
+          in: path
+          description: ID of transformer to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transformer'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Transformer not found
+      security:
+        - api_key: []
+    put:
+      tags:
+        - transformers
+      summary: Updates a transformer with new values
+      operationId: updateTransformer
+      parameters:
+        - name: transformerSlug
+          in: path
+          description: ID of transformer that needs to be updated
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transformer'
+        '403':
+          description: Not authorized
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transformer'
+    delete:
+      tags:
+        - transformers
+      summary: Deletes a transformer
+      operationId: deleteTransformer
+      parameters:
+        - name: transformerSlug
+          in: path
+          description: Transformer id to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '403':
+          description: Not authorized
+        '404':
+          description: Transformer not found
       security:
         - api_key: []
   /records:
@@ -482,7 +618,7 @@ components:
             type: string
         trigger:
           type: string
-          example: '${producerId}.{dataRecord}.volume >= @sma(5)' 
+          example: '${producerSlug}.{dataRecord}.volume >= @sma(5)' 
           description: see monitor-triggers.md in documentation for full syntax
     ProducerSummary:
       type: object
@@ -588,6 +724,77 @@ components:
           type: array
           items:
             type: string
+    TransformerSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+          minLength: 3
+          maxLength: 20
+        name:
+          type: string
+        description:
+          type: string
+        lastRun:
+          type: string
+          format: date-time
+        records:
+          type: array
+          items:
+            type: string
+            minLength: 3
+            maxLength: 20
+    Transformer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+          description: a short, memorable name for this transformer
+          minLength: 3
+          maxLength: 20
+        name:
+          type: string
+        description:
+          type: string
+        kind:
+          type: string
+          enum: [docker, executable]
+        repository:
+          type: string
+          description: Repository where command may be retrieved. File stores are denoted with file://, docker repos are prefixed with docker://
+        command:
+          type: string
+        arguments:
+          type: array
+          items:
+            type: string
+        secrets:
+          type: array
+          items:
+            type: string
+        lastRun:
+          type: string
+          format: date-time
+        records:
+          type: array
+          description: List of record names the transformer can consume
+          items:
+            type: string
+            minLength: 3
+            maxLength: 20
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+
   securitySchemes:
     api_key:
       type: apiKey
