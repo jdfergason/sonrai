@@ -1,0 +1,595 @@
+openapi: 3.0.0
+info:
+  description: |
+    Sonrai API provides programmatic access to the sonrai data platform.
+  version: "1.0.0"
+  title: Sonrai
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/jdfergason/Sonrai/1.0.0
+  - url: 'https://petstore.swagger.io/v2'
+tags:
+  - name: activity
+    description: Details about recent activity
+  - name: producers
+    description: Producers create new data records in Sonrai
+  - name: data-records
+    description: Types of data that can flow through Sonrai
+  - name: monitors
+    description: Create alarms and monitor activity
+  - name: syncs
+    description: Syncs save data records to the Data Lake
+paths:
+  /activity:
+    get:
+      tags:
+        - activity
+      summary: Fetch recent activity
+      operationId: listActivity
+      parameters:
+        - name: since
+          in: query
+          description: Earliest date to return activity from
+          example: "2022-04-01T12:31:44Z"
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          description: page to retrieve
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '403':
+          description: Not authorized
+      security:
+        - api_key: []
+  /producer:
+    get:
+      tags:
+        - producers
+      summary: List all producers
+      description: Returns information for all configured producers
+      operationId: listProducers
+      parameters:
+        - name: page
+          in: query
+          description: page to retrieve
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProducerSummary'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Producer not found
+      security:
+        - api_key: []
+    put:
+      tags:
+        - producers
+      summary: Create a producer
+      operationId: createProducer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producer'
+        '403':
+          description: Not authorized
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producer'
+  '/producer/{producerId}':
+    get:
+      tags:
+        - producers
+      summary: Retrieve details of all producers
+      description: Returns the details of all producers belonging to the user
+      operationId: getProducerById
+      parameters:
+        - name: producerId
+          in: path
+          description: ID of producer to return
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producer'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Producer not found
+      security:
+        - api_key: []
+    put:
+      tags:
+        - producers
+      summary: Updates a producer with new values
+      operationId: updateProducer
+      parameters:
+        - name: producerId
+          in: path
+          description: ID of producer that needs to be updated
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producer'
+        '403':
+          description: Not authorized
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producer'
+    delete:
+      tags:
+        - producers
+      summary: Deletes a producer
+      operationId: deleteProducer
+      parameters:
+        - name: producerId
+          in: path
+          description: Producer id to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '403':
+          description: Not authorized
+        '404':
+          description: Producer not found
+      security:
+        - api_key: []
+  /records:
+    get:
+      tags:
+        - data-records
+      summary: Returns usage statistics by data record
+      operationId: getRecords
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataRecord'
+      security:
+        - api_key: []
+  /monitors:
+    get:
+      tags:
+        - monitors
+      summary: List all monitors
+      description: Returns information about all configured monitors
+      operationId: getMonitors
+      parameters:
+        - name: page
+          in: query
+          description: page to retrieve
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monitor'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Producer not found
+      security:
+        - api_key: []
+    put:
+      tags:
+        - monitors
+      summary: Creates a monitor
+      operationId: createMonitor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        '403':
+          description: Not authorized
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitor'
+  '/monitor/{monitorId}':
+    put:
+      tags:
+        - monitors
+      summary: Updates a monitor with new values
+      operationId: updateMonitor
+      parameters:
+        - name: monitorId
+          in: path
+          description: ID of monitor that needs to be updated
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        '403':
+          description: Not authorized
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitor'
+    delete:
+      tags:
+        - monitors
+      summary: Deletes a monitor
+      operationId: deleteMonitor
+      parameters:
+        - name: monitorId
+          in: path
+          description: Monitor id to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '403':
+          description: Not authorized
+        '404':
+          description: Producer not found
+      security:
+        - api_key: []
+  /syncs:
+    get:
+      tags:
+        - syncs
+      summary: List all syncs
+      description: Returns information about all configured syncs
+      operationId: getSyncs
+      parameters:
+        - name: page
+          in: query
+          description: page to retrieve
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sync'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Producer not found
+      security:
+        - api_key: []
+    put:
+      tags:
+        - syncs
+      summary: Creates a sync
+      operationId: createSync
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sync'
+        '403':
+          description: Not authorized
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sync'
+  '/sync/{syncId}':
+    put:
+      tags:
+        - syncs
+      summary: Updates a sync with new values
+      operationId: updateSync
+      parameters:
+        - name: syncId
+          in: path
+          description: ID of sync that needs to be updated
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sync'
+        '403':
+          description: Not authorized
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sync'
+    delete:
+      tags:
+        - syncs
+      summary: Deletes a sync
+      operationId: deleteSync
+      parameters:
+        - name: syncId
+          in: path
+          description: Sync id to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '403':
+          description: Not authorized
+        '404':
+          description: Sync not found
+      security:
+        - api_key: []
+components:
+  schemas:
+    DataRecord:
+      type: object
+      properties:
+        slug:
+          type: string
+          minLength: 3
+          maxLength: 20
+        volume:
+          type: array
+          items:
+            $ref: '#/components/schemas/Metric'
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date-time
+        name:
+          type: string
+        description:
+          type: string
+        kind:
+          type: string
+          enum: [create, update, delete, execute, alarm, error]
+    Metric:
+      type: object
+      properties:
+        name:
+          type: string
+        date:
+          type: string
+          format: date-time
+        value:
+          type: number
+    Monitor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        created:
+          type: string
+          format: date-time
+        kind:
+          type: string
+          enum: [volume]
+        notificationType:
+          type: string
+          enum: [email, post]
+        receivers:
+          type: array
+          items:
+            type: string
+        trigger:
+          type: string
+          example: '${producerId}.{dataRecord}.volume >= @sma(5)' 
+          description: see monitor-triggers.md in documentation for full syntax
+    ProducerSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+          minLength: 3
+          maxLength: 20
+        name:
+          type: string
+        description:
+          type: string
+        lastRun:
+          type: string
+          format: date-time
+        nextRun:
+          type: string
+          format: date-time
+        records:
+          type: array
+          items:
+            type: string
+            minLength: 3
+            maxLength: 20
+        tags:
+          type: array
+          items:
+            type: string
+            minLength: 3
+            maxLength: 20
+    Producer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+          description: a short, memorable name for this producer
+          minLength: 3
+          maxLength: 20
+        name:
+          type: string
+        description:
+          type: string
+        kind:
+          type: string
+          enum: [docker, executable]
+        repository:
+          type: string
+          description: Repository where command may be retrieved. File stores are denoted with file://, docker repos are prefixed with docker://
+        command:
+          type: string
+        arguments:
+          type: array
+          items:
+            type: string
+        secrets:
+          type: array
+          items:
+            type: string
+        schedule:
+          type: string
+          format: cron
+        lastRun:
+          type: string
+          format: date-time
+        nextRun:
+          type: string
+          format: date-time
+        records:
+          type: array
+          items:
+            type: string
+            minLength: 3
+            maxLength: 20
+        tags:
+          type: array
+          items:
+            type: string
+            minLength: 3
+            maxLength: 20
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+    Sync:
+      type: object
+      properties:
+        name:
+          type: string
+        kind:
+          type: string
+          enum: [docker, executable]
+        command:
+          type: string
+        arguments:
+          type: array
+          items:
+            type: string
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
