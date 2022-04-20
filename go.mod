@@ -1,6 +1,6 @@
 module github.com/jdfergason/sonrai
 
-go 1.17
+go 1.18
 
 require (
 	github.com/nats-io/nats-server/v2 v2.7.4
