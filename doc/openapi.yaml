@@ -702,6 +702,15 @@ components:
           type: array
           items:
             type: string
+        environment:
+          type: array
+          items:
+            type: object
+            properties:
+              name: 
+                type: string
+              value: 
+                type: string             
         secrets:
           type: array
           items:
@@ -797,6 +806,15 @@ components:
           type: array
           items:
             type: string
+        environment:
+          type: array
+          items:
+            type: object
+            properties:
+              name: 
+                type: string
+              value: 
+                type: string 
         secrets:
           type: array
           items:
