@@ -16,12 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package main
+package cmd
 
 import (
-	"github.com/jdfergason/sonrai/cmd"
+	"os"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 )
 
-func main() {
-	cmd.Execute()
+func setupLogging() {
+	// UNIX Time is faster and smaller than most timestamps
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	if viper.GetBool("log.debug") {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+		log.Print("set log level to debug")
+	}
+	if viper.GetBool("log.pretty") {
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	}
 }

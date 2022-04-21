@@ -1,0 +1,17 @@
+# Example sonrai configuration file
+[log]
+# Enable debug logging
+debug = false
+# Pretty print log messages to STDERR (alternative is to write JSON formatted logs)
+pretty = true
+
+# Configuration pertaining to API server
+[server]
+# Port to serve HTTP on
+port = 3000
+
+# Database related configuration
+[database]
+# Database connection string. Format is database specific.
+# SQLite: sqlite://<path to database>, e.g. sqlite://sonrai.sqlite3 
+dsn = "sqlite://sonrai.sqlite3"

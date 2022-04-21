@@ -1,0 +1,9 @@
+[log]
+# Print debug messages
+debug = false
+# Pretty print log output to STDERR instead of default JSON output
+pretty = true 
+
+[server]
+# Port to run HTTPS server on
+port = 3000

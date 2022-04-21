@@ -14,7 +14,7 @@ software distributed under the License is distributed on an
 "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
-under the License.    
+under the License.
 */
 package cmd
 
@@ -27,13 +27,13 @@ import (
 )
 
 var cfgFile string
+var debug bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sonrai",
 	Short: "Sonrai manages the ETL functions of a data lake",
-	Long: `Sonrai provides tools to retrieve, transform, and save data records. This CLI provides mechanisms for interacting with the data.
-Additional configuration available in $HOME/.sonrai.toml`,
+	Long:  `Sonrai provides tools to retrieve, transform, and save data records.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -42,6 +42,9 @@ Additional configuration available in $HOME/.sonrai.toml`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	// setup logging
+	setupLogging()
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
@@ -55,11 +58,12 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.sonrai.toml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.sonrai/sonrai.toml)")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// logging related functions
+	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "set logging level to debug")
+	viper.BindPFlag("log.debug", rootCmd.PersistentFlags().Lookup("debug"))
+	viper.SetDefault("log.pretty", true)
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -68,14 +72,12 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
 		// Search config in home directory with name ".sonrai" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigType("toml")
-		viper.SetConfigName(".sonrai")
+		viper.SetConfigName("sonrai")        // name of config file (without extension)
+		viper.SetConfigType("toml")          // REQUIRED if the config file does not have the extension in the name
+		viper.AddConfigPath("/etc/sonrai/")  // path to look for the config file in
+		viper.AddConfigPath("$HOME/.sonrai") // call multiple times to add many search paths
+		viper.AddConfigPath(".")             // optionally look for config in the working directory
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

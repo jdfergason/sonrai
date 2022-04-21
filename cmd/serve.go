@@ -22,9 +22,14 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jdfergason/sonrai/appserver"
 	"github.com/nats-io/nats-server/v2/server"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
+
+var port int
 
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
@@ -36,7 +41,7 @@ may be overridden in the [server] section of the config file.
 **API** http://localhost:3000/api/v1/<endpoint>
 **UI**  http://localhost:3000/ui`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
+		log.Info().Int("port", viper.GetInt("server.port")).Msg("starting server")
 
 		// start an embedded NATS server
 		opts := &server.Options{}
@@ -49,22 +54,21 @@ may be overridden in the [server] section of the config file.
 		go ns.Start()
 
 		if !ns.ReadyForConnections(4 * time.Second) {
-			panic("not ready for connection")
+			panic("not ready for nats connections")
 		}
 
+		app := appserver.Setup()
+
+		listen := fmt.Sprintf(":%d", viper.GetInt("server.port"))
+		log.Fatal().Msg(app.Listen(listen).Error())
 	},
 }
 
 func init() {
+	cobra.OnInitialize(setupLogging)
+
 	rootCmd.AddCommand(serveCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serveCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	serveCmd.Flags().IntVarP(&port, "port", "p", 3000, "port to run HTTPS server")
+	viper.BindPFlag("server.port", serveCmd.Flags().Lookup("port"))
 }

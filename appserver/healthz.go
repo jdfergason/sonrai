@@ -16,12 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package main
+package appserver
 
-import (
-	"github.com/jdfergason/sonrai/cmd"
-)
+import "github.com/gofiber/fiber/v2"
 
-func main() {
-	cmd.Execute()
+func healthz(c *fiber.Ctx) error {
+	return c.JSON(fiber.Map{"status": "success", "message": "API is alive"})
 }
