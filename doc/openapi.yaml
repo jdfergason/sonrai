@@ -715,7 +715,7 @@ components:
         nextRun:
           type: string
           format: date-time
-        records:
+        recordTypes:
           type: array
           items:
             type: string
