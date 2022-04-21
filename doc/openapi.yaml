@@ -25,7 +25,22 @@ tags:
     description: Create alarms and monitor activity
   - name: syncs
     description: Syncs save data records to the Data Lake
+  - name: util
+    description: Utility methods
 paths:
+  /healthz:
+    get:
+      tags:
+        - util
+      summary: Return health of service
+      operationId: getHealth
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
   /activity:
     get:
       tags:
@@ -329,7 +344,7 @@ paths:
           description: Transformer not found
       security:
         - api_key: []
-  /records:
+  /record-info:
     get:
       tags:
         - data-records
@@ -587,6 +602,14 @@ components:
         kind:
           type: string
           enum: [create, update, delete, execute, alarm, error]
+    Health:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: string
+          enum: [success, error]
     Metric:
       type: object
       properties:
