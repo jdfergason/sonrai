@@ -20,10 +20,9 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/jdfergason/sonrai/appserver"
-	"github.com/nats-io/nats-server/v2/server"
+	"github.com/jdfergason/sonrai/nats"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -41,22 +40,13 @@ may be overridden in the [server] section of the config file.
 **API** http://localhost:3000/api/v1/<endpoint>
 **UI**  http://localhost:3000/ui`,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Info().Int("port", viper.GetInt("server.port")).Msg("starting server")
-
 		// start an embedded NATS server
-		opts := &server.Options{}
-		ns, err := server.NewServer(opts)
-
-		if err != nil {
-			panic(err)
+		if viper.GetString("server.nats.url") == "" {
+			log.Info().Msg("starting embedded nats server")
+			nats.Serve()
 		}
 
-		go ns.Start()
-
-		if !ns.ReadyForConnections(4 * time.Second) {
-			panic("not ready for nats connections")
-		}
-
+		log.Info().Int("port", viper.GetInt("server.port")).Msg("starting http server")
 		app := appserver.Setup()
 
 		listen := fmt.Sprintf(":%d", viper.GetInt("server.port"))
@@ -71,4 +61,6 @@ func init() {
 
 	serveCmd.Flags().IntVarP(&port, "port", "p", 3000, "port to run HTTPS server")
 	viper.BindPFlag("server.port", serveCmd.Flags().Lookup("port"))
+
+	viper.SetDefault("server.nats.url", "")
 }

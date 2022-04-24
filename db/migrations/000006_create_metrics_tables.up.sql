@@ -7,7 +7,7 @@ CREATE TABLE producer_run (
     records_produced INT,
     error_count INT,
     expires TIMESTAMP
-)
+);
 
 CREATE TABLE producer_log (
     producer_id UUID,
@@ -17,7 +17,7 @@ CREATE TABLE producer_log (
     source TEXT,
     message TEXT,
     expires TIMESTAMP
-)
+);
 
 CREATE TABLE transformer_run (
     transformer_id UUID,
@@ -28,7 +28,7 @@ CREATE TABLE transformer_run (
     records_produced INT,
     error_count INT,
     expires TIMESTAMP
-)
+);
 
 CREATE TABLE transformer_log (
     transformer_id UUID,
@@ -38,7 +38,7 @@ CREATE TABLE transformer_log (
     source TEXT,
     message TEXT,
     expires TIMESTAMP
-)
+);
 
 CREATE TABLE sync_run (
     sync_id UUID,
@@ -49,7 +49,7 @@ CREATE TABLE sync_run (
     records_produced INT,
     error_count INT,
     expires TIMESTAMP
-)
+);
 
 CREATE TABLE sync_log (
     sync_id UUID,
@@ -59,7 +59,7 @@ CREATE TABLE sync_log (
     source TEXT,
     message TEXT,
     expires TIMESTAMP
-)
+);
 
 CREATE TABLE record_timeseries (
     record_type TEXT,
@@ -68,4 +68,4 @@ CREATE TABLE record_timeseries (
     errors INT,
     source_kind TEXT,
     source_id UUID
-)
+);
