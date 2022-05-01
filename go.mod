@@ -4,24 +4,28 @@ go 1.17
 
 require (
 	github.com/gofiber/fiber/v2 v2.32.0
+	github.com/golang-migrate/migrate/v4 v4.15.1
+	github.com/google/uuid v1.3.0
+	github.com/magefile/mage v1.13.0
 	github.com/nats-io/nats-server/v2 v2.7.4
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.10.1
+	modernc.org/sqlite v1.16.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/golang-migrate/migrate/v4 v4.15.1 // indirect
-	github.com/google/uuid v1.3.0 // indirect
+	github.com/go-resty/resty/v2 v2.7.0 // indirect
+	github.com/gosimple/slug v1.12.0 // indirect
+	github.com/gosimple/unidecode v1.0.1 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/klauspost/compress v1.15.0 // indirect
-	github.com/magefile/mage v1.13.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
@@ -43,6 +47,7 @@ require (
 	go.uber.org/atomic v1.6.0 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 	golang.org/x/mod v0.4.2 // indirect
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/sys v0.0.0-20220408201424-a24fb2fb8a0f // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
@@ -57,7 +62,6 @@ require (
 	modernc.org/mathutil v1.4.1 // indirect
 	modernc.org/memory v1.0.7 // indirect
 	modernc.org/opt v0.1.1 // indirect
-	modernc.org/sqlite v1.16.0 // indirect
 	modernc.org/strutil v1.1.1 // indirect
 	modernc.org/token v1.0.0 // indirect
 )

@@ -26,6 +26,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+var apiHost string
 var cfgFile string
 var debug bool
 
@@ -59,6 +60,9 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.sonrai/sonrai.toml)")
+
+	rootCmd.PersistentFlags().StringVar(&apiHost, "api-host", "http://localhost:3000", "URL to connect to for sonrai API")
+	viper.BindPFlag("api.host", rootCmd.PersistentFlags().Lookup("api-host"))
 
 	// logging related functions
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "set logging level to debug")

@@ -9,10 +9,10 @@ CREATE TABLE producer (
     arguments JSONB,
     environment JSONB,
     secrets JSONB,
-    log_configuration JSONB,
     schedule TEXT,
     lastRun TIMESTAMP,
     recordTypes JSONB,
+    tags JSONB,
     created TIMESTAMP,
     updated TIMESTAMP
 );

@@ -16,17 +16,58 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package appserver
+package db
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/jdfergason/sonrai/nats"
+	"time"
+
+	"github.com/google/uuid"
 )
 
-func healthz(c *fiber.Ctx) error {
-	if nats.Healthy() {
-		return c.JSON(fiber.Map{"status": "success", "message": "API is alive"})
-	}
+type Activity struct {
+	ID        uuid.UUID
+	EventTime time.Time
+	EventType string
+	Message   string
+}
 
-	return c.JSON(fiber.Map{"status": "failed", "message": "NATS not running"})
+type Secret struct {
+	Name   string
+	Secret string
+}
+
+type Email struct {
+	Recipient string
+	Name      string
+}
+
+type Notification interface {
+	Notify(reason string, alarm *Alarm) error
+}
+
+type Alarm struct {
+	ID            uuid.UUID
+	Name          string
+	Definition    string
+	Notifications []*Notification
+}
+
+type Producer struct {
+	ID          uuid.UUID
+	Name        string
+	Slug        string
+	Description string
+	Kind        string
+	Command     string
+	Arguments   []string
+	Environment map[string]string
+	Schedule    string
+	LastRun     time.Time
+	Tags        []string
+}
+
+type Transformer struct {
+}
+
+type Sync struct {
 }

@@ -16,17 +16,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package appserver
+package db
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/jdfergason/sonrai/nats"
+	"database/sql"
+	"fmt"
+
+	"github.com/spf13/viper"
 )
 
-func healthz(c *fiber.Ctx) error {
-	if nats.Healthy() {
-		return c.JSON(fiber.Map{"status": "success", "message": "API is alive"})
-	}
-
-	return c.JSON(fiber.Map{"status": "failed", "message": "NATS not running"})
+func connect() *sql.Conn {
+	dsn := viper.GetString("database.dsn")
+	fmt.Println(dsn)
+	return nil
 }

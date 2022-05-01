@@ -16,17 +16,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package appserver
+package cmd
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/jdfergason/sonrai/nats"
+	"github.com/spf13/cobra"
 )
 
-func healthz(c *fiber.Ctx) error {
-	if nats.Healthy() {
-		return c.JSON(fiber.Map{"status": "success", "message": "API is alive"})
-	}
+// serveCmd represents the serve command
+var createCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create new objects in Sonrai",
+}
 
-	return c.JSON(fiber.Map{"status": "failed", "message": "NATS not running"})
+func init() {
+	rootCmd.AddCommand(createCmd)
 }

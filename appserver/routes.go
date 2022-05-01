@@ -32,7 +32,7 @@ func setupRoutes(app *fiber.App) {
 
 	// Producers
 	producers := api.Group("/producers")
-	producers.Get("/", healthz)
+	producers.Get("/", listProducers)
 	producers.Put("/", healthz)
 	producers.Get("/:slug", healthz)
 	producers.Put("/:slug", healthz)
