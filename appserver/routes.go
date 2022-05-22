@@ -33,9 +33,9 @@ func setupRoutes(app *fiber.App) {
 	// Producers
 	producers := api.Group("/producers")
 	producers.Get("/", listProducers)
-	producers.Put("/", healthz)
+	producers.Put("/", upsertProducer)
 	producers.Get("/:slug", healthz)
-	producers.Put("/:slug", healthz)
+	producers.Put("/:slug", upsertProducer)
 	producers.Delete("/:slug", healthz)
 
 	// Transformers

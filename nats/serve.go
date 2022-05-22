@@ -28,22 +28,34 @@ import (
 var Options *natsApi.Options
 var Server *natsApi.Server
 
-func Serve() {
-	Options = &natsApi.Options{}
-	Server, err := natsApi.NewServer(Options)
+type NatsInstance struct {
+	Options *natsApi.Options
+	Server  *natsApi.Server
+}
 
+var Nats NatsInstance
+
+func Serve() {
+	var err error
+	Nats.Options = &natsApi.Options{}
+	Nats.Server, err = natsApi.NewServer(Nats.Options)
 	if err != nil {
 		panic(err)
 	}
 
-	go Server.Start()
+	go Nats.Server.Start()
 
-	if !Server.ReadyForConnections(4 * time.Second) {
+	if !Nats.Server.ReadyForConnections(4 * time.Second) {
 		log.Error().Msg("nats not starting in a reasonable amount of time - not ready for nats connections after 4 seconds")
 		panic("nats failed")
 	}
 }
 
 func Healthy() bool {
-	return Server.Running()
+	if Nats.Server != nil {
+		return Nats.Server.Running()
+	} else {
+		log.Warn().Msg("nats server is nil")
+		return false
+	}
 }

@@ -3,9 +3,11 @@ module github.com/jdfergason/sonrai
 go 1.17
 
 require (
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gofiber/fiber/v2 v2.32.0
 	github.com/golang-migrate/migrate/v4 v4.15.1
 	github.com/google/uuid v1.3.0
+	github.com/gosimple/slug v1.12.0
 	github.com/magefile/mage v1.13.0
 	github.com/nats-io/nats-server/v2 v2.7.4
 	github.com/rs/zerolog v1.26.1
@@ -17,8 +19,6 @@ require (
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/go-resty/resty/v2 v2.7.0 // indirect
-	github.com/gosimple/slug v1.12.0 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect

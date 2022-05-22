@@ -19,9 +19,16 @@ under the License.
 package cmd
 
 import (
+	"encoding/json"
+	"fmt"
+	"os"
+
+	"github.com/go-resty/resty/v2"
 	"github.com/gosimple/slug"
+	"github.com/jdfergason/sonrai/db"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // serveCmd represents the serve command
@@ -30,41 +37,45 @@ var producerCreateCmd = &cobra.Command{
 	Short: "Create a new producer",
 	Args:  cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		name := args[0]
-		slug := slug.Make(name)
-		cmdExe := args[1]
-		cmdArgs := []string{}
-		if len(args) > 2 {
-			cmdArgs = args[2:]
+		producer := db.Producer{
+			Name:      args[0],
+			Slug:      slug.Make(args[0]),
+			Command:   args[1],
+			Arguments: args[2:],
 		}
 
-		log.Info().Str("Name", args[0]).Str("Slug", slug).Str("Command", cmdExe).Strs("Args", cmdArgs).Msg("creating producer")
-		/*
-			client := resty.New()
-			cmdUrl := fmt.Sprintf("%s/api/v1/producers", viper.GetString("api.host"))
-			log.Debug().Str("URL", cmdUrl).Msg("fetching producers from API")
-			resp, err := client.R().Get(cmdUrl)
-			if err != nil {
-				log.Error().Str("OriginalError", err.Error()).Msg("received error from server")
-				os.Exit(1)
-			}
-			if resp.StatusCode() >= 400 {
-				log.Error().Int("StatusCode", resp.StatusCode()).Msg("received error from server")
-				os.Exit(1)
-			}
+		producerResponse := db.Producer{}
 
-			body := resp.Body()
-			producers := []*db.Producer{}
-			err = json.Unmarshal(body, &producers)
-			if err != nil {
-				log.Error().Str("OriginalError", err.Error()).Msg("failed de-serializing JSON")
-				os.Exit(1)
-			}
+		producerJson, err := json.Marshal(producer)
+		if err != nil {
+			log.Error().Err(err).Msg("could not marshal producer to JSON")
+		}
 
-			for _, producer := range producers {
-				fmt.Printf("%+v\n", producer)
-			}
-		*/
+		log.Info().
+			Str("Name", producer.Name).
+			Str("Slug", producer.Slug).
+			Str("Command", producer.Name).
+			Strs("Args", producer.Arguments).
+			Msg("creating producer")
+
+		client := resty.New()
+		cmdUrl := fmt.Sprintf("%s/api/v1/producers", viper.GetString("api.host"))
+		log.Debug().Str("URL", cmdUrl).Msg("put to producer API")
+		resp, err := client.R().
+			SetHeader("Content-Type", "application/json").
+			SetBody(producerJson).
+			SetResult(&producerResponse).
+			Put(cmdUrl)
+		if err != nil {
+			log.Error().Err(err).Msg("received error from server")
+			os.Exit(1)
+		}
+		if resp.StatusCode() >= 400 {
+			log.Error().Int("StatusCode", resp.StatusCode()).Msg("received error from server")
+			os.Exit(1)
+		}
+
+		log.Info().Str("ID", producer.ID.String()).Msg("created producer")
 	},
 }
 

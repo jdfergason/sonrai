@@ -37,23 +37,23 @@ var fs embed.FS
 func Migrate(dsn string) error {
 	d, err := iofs.New(fs, "migrations")
 	if err != nil {
-		log.Fatal().Str("OriginalError", err.Error()).Msg("failed to create iofs with database migrations")
+		log.Fatal().Err(err).Msg("failed to create iofs with database migrations")
 		return err
 	}
 	m, err := migrate.NewWithSourceInstance("iofs", d, dsn)
 	if err != nil {
-		log.Fatal().Str("OriginalError", err.Error()).Msg("failed to create migration iofs isntance")
+		log.Fatal().Err(err).Msg("failed to create migration iofs isntance")
 		return err
 	}
 	currentVersion, dirty, err := m.Version()
 	log.Info().Uint("CurrentVersion", currentVersion).Bool("Dirty", dirty).Msg("starting migration")
 	err = m.Up()
 	if err != nil {
-		log.Error().Str("OriginalError", err.Error()).Msg("unable to apply database migrations")
+		log.Error().Err(err).Msg("unable to apply database migrations")
 		return err
 	}
 	newVersion, dirty, err := m.Version()
 	log.Info().Uint("NewVersion", newVersion).Bool("Dirty", dirty).Msg("completed migration")
-	
+
 	return nil
 }

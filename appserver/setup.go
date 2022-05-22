@@ -25,9 +25,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
-var fiberApp *fiber.App
+type FiberInstance struct {
+	App *fiber.App
+}
+
+var fiberApp FiberInstance
 
 // Embed a directory
 //go:embed dist/*
@@ -45,16 +50,17 @@ func configureCors(app *fiber.App) {
 
 func Setup() *fiber.App {
 	// start the fiber server
-	fiberApp = fiber.New()
-	configureCors(fiberApp)
+	fiberApp.App = fiber.New()
+	configureCors(fiberApp.App)
 
-	setupRoutes(fiberApp)
+	setupRoutes(fiberApp.App)
 
-	fiberApp.Use("/", filesystem.New(filesystem.Config{
+	fiberApp.App.Use(logger.New())
+	fiberApp.App.Use("/", filesystem.New(filesystem.Config{
 		Root:       http.FS(embedDirUi),
 		PathPrefix: "dist",
 		Browse:     true,
 	}))
 
-	return fiberApp
+	return fiberApp.App
 }

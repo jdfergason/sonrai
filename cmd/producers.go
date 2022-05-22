@@ -40,7 +40,7 @@ var producerCmd = &cobra.Command{
 		log.Debug().Str("URL", cmdUrl).Msg("fetching producers from API")
 		resp, err := client.R().Get(cmdUrl)
 		if err != nil {
-			log.Error().Str("OriginalError", err.Error()).Msg("received error from server")
+			log.Error().Err(err).Msg("received error from server")
 			os.Exit(1)
 		}
 		if resp.StatusCode() >= 400 {
@@ -52,7 +52,7 @@ var producerCmd = &cobra.Command{
 		producers := []*db.Producer{}
 		err = json.Unmarshal(body, &producers)
 		if err != nil {
-			log.Error().Str("OriginalError", err.Error()).Msg("failed de-serializing JSON")
+			log.Error().Err(err).Msg("failed de-serializing JSON")
 			os.Exit(1)
 		}
 
