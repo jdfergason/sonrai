@@ -21,8 +21,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/jdfergason/sonrai/appserver"
-	"github.com/jdfergason/sonrai/nats"
+	"github.com/penny-vault/sonrai/appserver"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -41,11 +40,6 @@ may be overridden in the [server] section of the config file.
 **UI**  http://localhost:3000/ui`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// start an embedded NATS server
-		if viper.GetString("server.nats.url") == "" {
-			log.Info().Msg("starting embedded nats server")
-			nats.Serve()
-		}
-
 		log.Info().Int("port", viper.GetInt("server.port")).Msg("starting http server")
 		app := appserver.Setup()
 
@@ -61,6 +55,4 @@ func init() {
 
 	serveCmd.Flags().IntVarP(&port, "port", "p", 3000, "port to run HTTPS server")
 	viper.BindPFlag("server.port", serveCmd.Flags().Lookup("port"))
-
-	viper.SetDefault("server.nats.url", "")
 }

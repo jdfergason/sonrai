@@ -19,12 +19,8 @@ under the License.
 package appserver
 
 import (
-	"embed"
-	"net/http"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
@@ -33,10 +29,6 @@ type FiberInstance struct {
 }
 
 var fiberApp FiberInstance
-
-// Embed a directory
-//go:embed dist/*
-var embedDirUi embed.FS
 
 func configureCors(app *fiber.App) {
 	// Configure CORS
@@ -56,11 +48,6 @@ func Setup() *fiber.App {
 	setupRoutes(fiberApp.App)
 
 	fiberApp.App.Use(logger.New())
-	fiberApp.App.Use("/", filesystem.New(filesystem.Config{
-		Root:       http.FS(embedDirUi),
-		PathPrefix: "dist",
-		Browse:     true,
-	}))
 
 	return fiberApp.App
 }

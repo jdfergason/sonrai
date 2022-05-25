@@ -30,39 +30,11 @@ func setupRoutes(app *fiber.App) {
 	activity := api.Group("/activity")
 	activity.Get("/", healthz)
 
-	// Producers
-	producers := api.Group("/producers")
-	producers.Get("/", listProducers)
-	producers.Put("/", upsertProducer)
-	producers.Get("/:slug", healthz)
-	producers.Put("/:slug", upsertProducer)
-	producers.Delete("/:slug", healthz)
-
-	// Transformers
-	transformers := api.Group("/transformers")
-	transformers.Get("/", healthz)
-	transformers.Put("/", healthz)
-	transformers.Get("/:slug", healthz)
-	transformers.Put("/:slug", healthz)
-	transformers.Delete("/:slug", healthz)
-
-	// Data Records
-	records := api.Group("/record-info")
-	records.Get("/", healthz)
-
-	// Monitors
-	monitors := api.Group("/monitors")
-	monitors.Get("/", healthz)
-	monitors.Put("/", healthz)
-	monitors.Get("/:slug", healthz)
-	monitors.Put("/:slug", healthz)
-	monitors.Delete("/:slug", healthz)
-
-	// Syncs
-	syncs := api.Group("/syncs")
-	syncs.Get("/", healthz)
-	syncs.Put("/", healthz)
-	syncs.Get("/:slug", healthz)
-	syncs.Put("/:slug", healthz)
-	syncs.Delete("/:slug", healthz)
+	// Jobs
+	jobs := api.Group("/jobs")
+	jobs.Get("/", listJobs)
+	jobs.Put("/", upsertJob)
+	jobs.Get("/:slug", healthz)
+	jobs.Put("/:slug", upsertJob)
+	jobs.Delete("/:slug", healthz)
 }

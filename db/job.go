@@ -20,11 +20,11 @@ package db
 
 import "fmt"
 
-// ListProducers retrieves a list of producers from the database
-func ListProducers() []*Producer {
+// ListJobs retrieves a list of jobs from the database
+func ListJobs() []*Job {
 	conn := connect()
 	if conn == nil {
 		fmt.Println("conn is nil")
 	}
-	return []*Producer{}
+	return []*Job{}
 }

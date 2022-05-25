@@ -20,13 +20,8 @@ package appserver
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jdfergason/sonrai/nats"
 )
 
 func healthz(c *fiber.Ctx) error {
-	if nats.Healthy() {
-		return c.JSON(fiber.Map{"status": "success", "message": "API is alive"})
-	}
-
-	return c.JSON(fiber.Map{"status": "failed", "message": "NATS not running"})
+	return c.JSON(fiber.Map{"status": "success", "message": "API is alive"})
 }

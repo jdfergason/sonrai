@@ -19,7 +19,7 @@ under the License.
 package main
 
 import (
-	"github.com/jdfergason/sonrai/cmd"
+	"github.com/penny-vault/sonrai/cmd"
 )
 
 func main() {

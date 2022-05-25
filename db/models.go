@@ -24,35 +24,18 @@ import (
 	"github.com/google/uuid"
 )
 
-type Activity struct {
-	ID        uuid.UUID
-	EventTime time.Time
-	EventType string
-	Message   string
+type Project struct {
+	Jobs []*Job
 }
 
-type Secret struct {
-	Name   string
-	Secret string
+type JobResponse struct {
+	TraceID string
+	Code int
+	Status string
+	Data []*Job
 }
 
-type Email struct {
-	Recipient string
-	Name      string
-}
-
-type Notification interface {
-	Notify(reason string, alarm *Alarm) error
-}
-
-type Alarm struct {
-	ID            uuid.UUID
-	Name          string
-	Definition    string
-	Notifications []*Notification
-}
-
-type Producer struct {
+type Job struct {
 	ID          uuid.UUID
 	Name        string
 	Slug        string
@@ -66,8 +49,15 @@ type Producer struct {
 	Tags        []string
 }
 
-type Transformer struct {
+type JobRun struct {
+
 }
 
-type Sync struct {
+type JobLog struct {
+	
+}
+
+type Secret struct {
+	Name   string
+	Secret string
 }

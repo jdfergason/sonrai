@@ -19,7 +19,7 @@ under the License.
 package cmd
 
 import (
-	"github.com/jdfergason/sonrai/db"
+	"github.com/penny-vault/sonrai/db"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

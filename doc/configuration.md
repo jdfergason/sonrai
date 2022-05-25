@@ -2,16 +2,15 @@
 
 ## Project Configuration
 
-A project consists of a set of producers, transformers, metrics, monitors and syncs. It is configured via JSON or TOML. Each type is an array of 
-tables in TOML.
+A project consists of a set of jobs defined in a TOML file.
 
-### Producer
+### Job
 
 ```toml
-[[producer]]
-name = "Producer Name (required)"
+[[job]]
+name = "Job Name (required)"
 slug = "Short URL safe name (generated from name if not provided)"
-description = "Description of producer"
+description = "Description of job"
 schedule = "@every 5m"
 type = "docker"
 image = "my/image"
@@ -22,11 +21,5 @@ tags = ["tag"]
 on.error.action = "retry"
 on.error.max_retries = 3
 ```
-
-### Transformer
-
-### Monitor
-
-### Sync
 
 ## Server Configuration

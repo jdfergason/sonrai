@@ -21,7 +21,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/jdfergason/sonrai/common"
+	"github.com/penny-vault/sonrai/common"
 	"github.com/spf13/cobra"
 )
 
