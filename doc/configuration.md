@@ -16,26 +16,11 @@ schedule = "@every 5m"
 type = "docker"
 image = "my/image"
 args = ["1", "${MY_SECRET}", "3"]
+docker_args = ["-v", "name:/sdf"]
+env.env1 = "val"
 tags = ["tag"]
 on.error.action = "retry"
 on.error.max_retries = 3
-
-[producer.env]
-env1 = "val"
-```
-
-NOTE: environment may also be defined using the `.` syntax or as an inline table, like so:
-
-```toml
-[[producer]]
-env.env1 = "val"
-```
-
-and,
-
-```toml
-[[producer]]
-env = { env1 = "val" }  
 ```
 
 ### Transformer
