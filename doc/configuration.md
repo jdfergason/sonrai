@@ -18,8 +18,8 @@ args = ["1", "${MY_SECRET}", "3"]
 docker_args = ["-v", "name:/sdf"]
 env.env1 = "val"
 tags = ["tag"]
-on.error.action = "retry"
-on.error.max_retries = 3
+on_error.action = "retry"
+on_error.max_retries = 3
 ```
 
 ## Server Configuration
